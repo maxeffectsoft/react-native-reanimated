@@ -4,7 +4,7 @@ import Animated, { useSharedValue, useWorklet, useEventWorklet } from 'react-nat
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-function MichalApp() {
+function DragTest() {
     const prevX = useSharedValue(0);
     const prevY = useSharedValue(0);
     const totalX = useSharedValue(0);
@@ -91,4 +91,4 @@ function MichalApp() {
     )
 }
 
-export default MichalApp
+export default DragTest

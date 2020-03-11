@@ -163,6 +163,19 @@ static jsi::Value __hostFunction_NativeReanimatedModuleSpec_unregisterEventAppli
   return jsi::Value::undefined();
 }
 
+static jsi::Value __hostFunction_NativeReanimatedModuleSpec_getRegistersState(
+    jsi::Runtime &rt,
+    TurboModule &turboModule,
+    const jsi::Value *args,
+    size_t count) {
+  static_cast<NativeReanimatedModuleSpec *>(&turboModule)
+      ->getRegistersState(
+          rt,
+          (int)args[0].getNumber(),
+          std::move(args[1]));
+  return jsi::Value::undefined();
+}
+
 
 NativeReanimatedModuleSpec::NativeReanimatedModuleSpec(std::shared_ptr<JSCallInvoker> jsInvoker)
     : TurboModule("NativeReanimated", jsInvoker) {
@@ -192,6 +205,9 @@ NativeReanimatedModuleSpec::NativeReanimatedModuleSpec(std::shared_ptr<JSCallInv
       4, __hostFunction_NativeReanimatedModuleSpec_registerEventApplier};
   methodMap_["unregisterEventApplier"] = MethodMetadata{
       1, __hostFunction_NativeReanimatedModuleSpec_unregisterEventApplier};
+    
+  methodMap_["getRegistersState"] = MethodMetadata{
+      2, __hostFunction_NativeReanimatedModuleSpec_getRegistersState};
 
   methodMap_["call"] = MethodMetadata{
       1, __hostFunction_NativeReanimatedModuleSpec_call};

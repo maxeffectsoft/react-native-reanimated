@@ -13,8 +13,8 @@
 using namespace facebook;
 
 class WorkletRegistry {
-  std::unordered_map<int, std::shared_ptr<Worklet>> workletMap;
   public:
+    std::unordered_map<int, std::shared_ptr<Worklet>> workletMap;
     void registerWorklet(int id, std::shared_ptr<jsi::Function> ptr);
     void unregisterWorklet(int id);
     std::shared_ptr<Worklet> getWorklet(int id);

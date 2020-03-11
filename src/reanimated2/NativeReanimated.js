@@ -62,4 +62,8 @@ export default {
     InnerNativeModule.unregisterWorklet(workletId);
   },
 
+  getRegistersState(option, callback) {
+    InnerNativeModule.getRegistersState(option, callback);
+  },
+
 };

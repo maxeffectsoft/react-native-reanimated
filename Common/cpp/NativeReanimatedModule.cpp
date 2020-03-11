@@ -37,7 +37,7 @@ void NativeReanimatedModule::registerWorklet( // make it async !!!
   jsi::Runtime &rt,
   double id,
   std::string functionAsString) {
-  scheduler->scheduleOnUI([functionAsString, id, this]() mutable {
+    scheduler->scheduleOnUI([functionAsString, id, this]() mutable {
     auto fun = function(*runtime, functionAsString.c_str());
     std::shared_ptr<jsi::Function> funPtr(new jsi::Function(std::move(fun)));
     this->workletRegistry->registerWorklet((int)id, funPtr);
@@ -204,6 +204,46 @@ void NativeReanimatedModule::onEvent(std::string eventName, std::string eventAsS
     workletRegistry,
     eventPtr));
   applierRegistry->event(*runtime, eventName, ho);
+}
+
+void NativeReanimatedModule::getRegistersState(jsi::Runtime &rt, int option, const jsi::Value &value) {
+  std::string s = "getRegistersState called cpp => " + std::to_string(sharedValueRegistry->sharedValueMap.size());
+  Logger::log(s.c_str());
+  // option:
+  //  1 - shared values
+  //  2 - worklets
+  jsi::Function fun = value.getObject(rt).asFunction(rt);
+  std::shared_ptr<jsi::Function> funPtr(new jsi::Function(std::move(fun)));
+
+  scheduler->scheduleOnUI([&rt, funPtr, this, option]() {
+    std::string ids;
+    switch(option) {
+      case 1: {
+        for(auto it = sharedValueRegistry->sharedValueMap.begin(); it != sharedValueRegistry->sharedValueMap.end(); ++it) {
+          ids += std::to_string(it->first) + " ";
+        }
+        if (ids.size() > 0) {
+          ids.pop_back();
+        }
+        break;
+      }
+      case 2: {
+        for(auto it = workletRegistry->workletMap.begin(); it != workletRegistry->workletMap.end(); ++it) {
+          ids += std::to_string(it->first) + " ";
+        }
+        if (ids.size() > 0) {
+          ids.pop_back();
+        }
+        break;
+      }
+      default: {
+        ids = "error: registers state invalid option provided";
+      }
+    }
+    scheduler->scheduleOnJS([&rt, ids, funPtr] () {
+      funPtr->call(rt, ids.c_str());
+    });
+  });
 }
 
 // test method

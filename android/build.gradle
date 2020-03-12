@@ -83,12 +83,20 @@ afterEvaluate { project ->
         include '**/*.java'
     }
 
-    android.libraryVariants.all { variant ->
+    // choi20200312 modi start
+    /*android.libraryVariants.all { variant ->
         def name = variant.name.capitalize()
         task "jar${name}"(type: Jar, dependsOn: variant.javaCompileProvider.get()) {
             from variant.javaCompileProvider.get().destinationDir
         }
+    }*/
+    android.libraryVariants.all { variant ->
+        def name = variant.name.capitalize()
+        task "jar${name}"(type: Jar, dependsOn: variant.javaCompile) {
+            from variant.javaCompile.destinationDir
+        }
     }
+    // choi20200312 modi end
 
     artifacts {
         archives androidSourcesJar
